@@ -1,56 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
     <title>Chess Game</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
-        .board { display: grid; grid-template-columns: repeat(8, 1fr); width: 400px; height: 400px; }
-        .square { width: 50px; height: 50px; }
-        .white { background-color: #eee; }
-        .black { background-color: #555; }
+        /* Basic styles for chess board */
+        #chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            width: 400px;
+            height: 400px;
+        }
+        .square {
+            width: 50px;
+            height: 50px;
+        }
+        .square.black {
+            background-color: #769656;
+        }
+        .square.white {
+            background-color: #eeeed2;
+        }
+        .piece {
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            font-size: 2em;
+            line-height: 50px;
+        }
     </style>
 </head>
 <body>
     <h1>Chess Game</h1>
-    <div class="board" id="board"></div>
+    <div id='difficulty-selection'>
+        <label for='difficulty'>Select Difficulty:</label>
+        <select id='difficulty'>
+            <option value='1'>Easy</option>
+            <option value='2'>Medium</option>
+            <option value='3'>Hard</option>
+            <option value='4'>Very Hard</option>
+            <option value='5'>Expert</option>
+        </select>
+    </div>
+    <div id='chess-board'></div>
     <script>
-        const board = document.getElementById('board');
-        const initialPosition = 'rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR';
-        const pieces = {'r': '♖', 'n': '♘', 'b': '♗', 'q': '♕', 'k': '♔', 'p': '♙',
-                         'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♟', 'P': '♟'};
-        let boardState = initialPosition.split('');
+        const boardElement = document.getElementById('chess-board');
+        const difficultyElement = document.getElementById('difficulty');
+        let board = [];
+        let selectedPiece = null;
 
         function createBoard() {
-            board.innerHTML = '';
-            for (let i = 0; i < 64; i++) {
-                const square = document.createElement('div');
-                square.className = 'square ' + ((i + Math.floor(i / 8)) % 2 === 0 ? 'white' : 'black');
-                square.dataset.index = i;
-                square.innerHTML = pieces[boardState[i]] || '';
-                board.appendChild(square);
-
-                // Click event for handling move
-                square.addEventListener('click', () => handleSquareClick(i));
+            for (let row = 0; row < 8; row++) {
+                board[row] = [];
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement('div');
+                    square.classList.add('square', (row + col) % 2 === 0 ? 'white' : 'black');
+                    square.dataset.row = row;
+                    square.dataset.col = col;
+                    square.addEventListener('click', () => handleSquareClick(row, col));
+                    boardElement.appendChild(square);
+                    board[row][col] = square;
+                }
             }
         }
 
-        function handleSquareClick(index) {
-            // Implement legal move validation and move handling
+        function handleSquareClick(row, col) {
+            if (selectedPiece) {
+                // Move logic
+                movePiece(row, col);
+                selectedPiece = null;
+            } else {
+                selectedPiece = {row, col};
+            }
+        }
+
+        function movePiece(toRow, toCol) {
+            // Validate move
+            if (isValidMove(selectedPiece.row, selectedPiece.col, toRow, toCol)) {
+                const piece = board[selectedPiece.row][selectedPiece.col].children[0];
+                board[toRow][toCol].appendChild(piece);
+                aiMove(); // Invoke AI to make next move
+            }
+        }
+
+        function isValidMove(fromRow, fromCol, toRow, toCol) {
+            // Simple validation logic
+            return true; // For now, we assume all moves are valid
+        }
+
+        function aiMove() {
+            const difficulty = difficultyElement.value;
+            // Implement AI based on difficulty
+            console.log(`AI is thinking at level: ${difficulty}`);
         }
 
         createBoard();
-
-        // AI logic to suggest moves based on difficulty levels (1-5)
-        function getAIMove(difficulty) {
-            // Simplified AI based on difficulty
-            // Level 1: Random move, Level 2: Basic strategy, up to Level 5: Advanced strategies
-        }
-
-        // Game initialization and handling logic would go here.
-
     </script>
 </body>
 </html>
