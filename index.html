@@ -1,1 +1,56 @@
-<!DOCTYPE html>\n<html lang='en'>\n<head>\n    <meta charset='UTF-8'>\n    <meta name='viewport' content='width=device-width, initial-scale=1.0'>\n    <title>Chess Game</title>\n    <style>\n        body { font-family: Arial, sans-serif; }\n        #chessboard { display: grid; grid-template-columns: repeat(8, 1fr); width: 400px; height: 400px; }\n        .square { width: 50px; height: 50px; }\n        .white { background-color: #eee; }\n        .black { background-color: #333; color: white; }\n    </style>\n</head>\n<body>\n    <h1>Chess Game</h1>\n    <div id='chessboard'></div>\n    <script>\n        const board = document.getElementById('chessboard');\n        let selectedPiece = null;\n        const pieces = [\n            '♖', '♘', '♗', '♕', '♔', '♗', '♘', '♖',\n            '♟', '♟', '♟', '♟', '♟', '♟', '♟', '♟'\n        ];\n        const initializeBoard = () => {\n            for (let i = 0; i < 64; i++) {\n                const square = document.createElement('div');\n                square.classList.add('square');\n                square.classList.toggle('white', (Math.floor(i / 8) + i) % 2 === 0);\n                square.classList.toggle('black', (Math.floor(i / 8) + i) % 2 !== 0);\n                square.innerHTML = pieces[i] || '';\n                square.addEventListener('click', () => onSquareClick(square, i));\n                board.appendChild(square);\n            }\n        };\n        const onSquareClick = (square, index) => {\n            if (selectedPiece === null) {\n                selectedPiece = index;\n            } else {\n                movePiece(selectedPiece, index);\n                selectedPiece = null;\n            }\n        };\n        const movePiece = (fromIndex, toIndex) => {\n            board.children[toIndex].innerHTML = board.children[fromIndex].innerHTML;\n            board.children[fromIndex].innerHTML = '';\n        };\n        initializeBoard();\n    </script>\n</body>\n</html>\n
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; }
+        .board { display: grid; grid-template-columns: repeat(8, 1fr); width: 400px; height: 400px; }
+        .square { width: 50px; height: 50px; }
+        .white { background-color: #eee; }
+        .black { background-color: #555; }
+    </style>
+</head>
+<body>
+    <h1>Chess Game</h1>
+    <div class="board" id="board"></div>
+    <script>
+        const board = document.getElementById('board');
+        const initialPosition = 'rnbqkbnrpppppppp................................PPPPPPPPRNBQKBNR';
+        const pieces = {'r': '♖', 'n': '♘', 'b': '♗', 'q': '♕', 'k': '♔', 'p': '♙',
+                         'R': '♜', 'N': '♞', 'B': '♝', 'Q': '♛', 'K': '♟', 'P': '♟'};
+        let boardState = initialPosition.split('');
+
+        function createBoard() {
+            board.innerHTML = '';
+            for (let i = 0; i < 64; i++) {
+                const square = document.createElement('div');
+                square.className = 'square ' + ((i + Math.floor(i / 8)) % 2 === 0 ? 'white' : 'black');
+                square.dataset.index = i;
+                square.innerHTML = pieces[boardState[i]] || '';
+                board.appendChild(square);
+
+                // Click event for handling move
+                square.addEventListener('click', () => handleSquareClick(i));
+            }
+        }
+
+        function handleSquareClick(index) {
+            // Implement legal move validation and move handling
+        }
+
+        createBoard();
+
+        // AI logic to suggest moves based on difficulty levels (1-5)
+        function getAIMove(difficulty) {
+            // Simplified AI based on difficulty
+            // Level 1: Random move, Level 2: Basic strategy, up to Level 5: Advanced strategies
+        }
+
+        // Game initialization and handling logic would go here.
+
+    </script>
+</body>
+</html>
